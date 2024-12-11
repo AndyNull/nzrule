@@ -1,0 +1,93 @@
+{
+    "mon_items": {
+        "1": {
+            "value": "cpu",
+            "name": "CPU使用率"
+        },
+        "2": {
+            "value": "gpu",
+            "name": "GPU使用率"
+        },
+        "3": {
+            "value": "memory",
+            "name": "内存使用率"
+        },
+        "4": {
+            "value": "swap",
+            "name": "交换使用率"
+        },
+        "5": {
+            "value": "disk",
+            "name": "磁盘使用率"
+        },
+        "6": {
+            "value": "net_in_speed",
+            "name": "入站网速"
+        },
+        "7": {
+            "value": "net_out_speed",
+            "name": "出站网速"
+        },
+        "8": {
+            "value": "net_all_speed",
+            "name": "双向网速"
+        },
+        "9": {
+            "value": "transfer_in",
+            "name": "入站流量"
+        },
+        "10": {
+            "value": "transfer_out",
+            "name": "出站流量"
+        },
+        "11": {
+            "value": "transfer_all",
+            "name": "双向流量"
+        },
+        "12": {
+            "value": "offline",
+            "name": "离线监控"
+        },
+        "13": {
+            "value": "load1",
+            "name": "1分钟内负载"
+        },
+        "14": {
+            "value": "load5",
+            "name": "5分钟内负载"
+        },
+        "15": {
+            "value": "load15",
+            "name": "15分钟内负载"
+        },
+        "16": {
+            "value": "process_count",
+            "name": "进程数"
+        },
+        "17": {
+            "value": "tcp_conn_count",
+            "name": "TCP连接数"
+        },
+        "18": {
+            "value": "udp_conn_count",
+            "name": "UDP连接数"
+        }, 
+        "19": {
+            "value": "transfer_in_cycle",
+            "name": "周期内的入站流量"
+        },
+        "20": {
+            "value": "transfer_out_cycle",
+            "name": "周期内的出站流量"
+        },
+        "21": {
+            "value": "transfer_all_cycle",
+            "name": "周期内的双向流量和"
+        },
+        "22": {
+            "value": "temperature_max",
+            "name": "最高温度"
+        }
+
+    }
+}

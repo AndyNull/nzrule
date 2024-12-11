@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>哪吒探针警报规则生成器</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/default.min.css">
+  <link rel="stylesheet" href="other/style.css">
+  <link rel="icon" href="./favicon.png">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/languages/json.min.js"></script>
+  <script src="other/script.js"></script>
+</head>
+
+<body>
+  <div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="text-center">哪吒警报规则生成器</h1>
+      <div class="text-right">
+        <a href="https://github.com/AndyNull/nzrule" target="_blank"
+          class="btn btn-outline-primary ml-2">
+          <i class="fab fa-github"></i> Github
+        </a>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="monItems">监控项目:</label>
+        <select class="form-control" id="monItems">
+          
+        </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="serverIds" id="serveridslabel">服务器黑名单 ID (用逗号分隔):</label>
+        <input type="text" class="form-control" id="serverIds" placeholder="例如: 1,2,3;可为空！">
+      </div>
+    </div>
+    <div class="form-row" id="numdiv">
+      <div class="form-group col-md-6">
+        <label for="min">下限值:</label>
+        <input type="text" class="form-control" id="min" placeholder="最低起始值">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="max">上限值:</label>
+        <input type="text" class="form-control" id="max" placeholder="最高阈值">
+      </div>
+    </div>    
+    <div class="form-group" id="durationdiv">
+      <label for="duration">持续监控时间（秒）:</label>
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" id="duration" placeholder="监控秒数" value="10">
+      </div>
+    </div>
+
+    <!-- 流量监控的输入框 -->
+    <div class="form-group" id="flowdiv" style="display: none;">
+      <div class="form-group">
+        <label>统计周期开始时间:</label>
+        <div class="input-group mb-3">
+        <select class="form-control" id="cycleStartTimezone"></select>
+        <input type="text" class="form-control" id="cycleStartDate" placeholder="可选择日期" data-input>
+        <input type="text" class="form-control" id="cycleStartTime" placeholder="可选择时间" data-input>
+        </div>
+        <input type="text" class="form-control" id="cycleStart" readonly>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label for="trafficType">流量类型:</label>
+          <select class="form-control" id="trafficType">
+          <option value="transfer_in_cycle">入站流量</option>
+          <option value="transfer_out_cycle">出站流量</option>
+          <option value="transfer_all_cycle" selected>双向流量</option>
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="cycleUnit">周期单位:</label>
+          <select class="form-control" id="cycleUnit">
+          <option value="hour">小时</option>
+          <option value="day">天</option>
+          <option value="week">周</option>
+          <option value="month" selected>月</option>
+          <option value="year">年</option>
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="cycleInterval">周期间隔 (单位为选择的周期单位):</label>
+          <input type="number" class="form-control" id="cycleInterval" min="1" value="1">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="0" id="cover_checkbox">
+      <label class="form-check-label" for="cover_checkbox">
+        白名单模式
+      </label>
+    </div>
+    <div class="text-right">
+      <button type="button" class="btn btn-outline-primary" id="generateRuleBtn">生成规则</button>
+      <button type="button" class="btn btn-outline-warning" id="appendRuleBtn">追加规则</button>
+      <button type="button" class="btn btn-outline-danger" id="clearRuleBtn">清空规则</button>
+    </div>
+    <div class="mt-4">
+      <label for="ruleOutput">生成的 JSON 规则:</label>
+      <div class="input-group">
+        <pre class="form-control rule-output"><code id="ruleOutput" class="json"></code></pre>
+        <div class="input-group-append">
+          <button class="btn btn-secondary" type="button" id="copyRuleBtn">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="errorModalLabel">错误</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="errorMessage"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  $('#monItems').change(function() {
+    var selectedValue = this.options[this.selectedIndex].value;
+    if (selectedValue === 'transfer_in_cycle' || selectedValue === 'transfer_out_cycle' || selectedValue === 'transfer_all_cycle') {
+      $('#durationdiv').hide();
+      $('#flowdiv').show();
+      $('#numdiv').show();
+    }else if(selectedValue === 'offline'){
+      $('#flowdiv').hide();
+      $('#durationdiv').show();
+      $('#numdiv').hide();
+    } else {
+      $('#durationdiv').show();
+      $('#flowdiv').hide();
+      $('#numdiv').show();
+    }
+  });
+  $("#cover_checkbox").change(function() {
+    $("#serveridslabel").text($(this).is(":checked") ? "服务器白名单ID：" : "服务器黑名单ID：");
+    $("#cover_checkbox").val($(this).is(":checked") ? "1" : "0");
+  });
+  $("#clearRuleBtn").click(function() {
+    $("#ruleOutput").empty();
+  });
+</script>
+</html>
