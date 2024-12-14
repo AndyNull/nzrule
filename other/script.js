@@ -120,8 +120,13 @@ $(document).ready(function () {
       }
       if (!(serverIds.length === 0 || (serverIds.length === 1 && serverIds[0] === ''))) {
         rule[0].ignore=serverIds.reduce((obj, id) => {
-          obj[id] = true;
-          return obj;
+          if(cover==1){
+            obj[id] = true;
+            return obj;
+          }else{
+            obj[id] = false;
+            return obj;
+          }
         }, {})
       }
       return rule;

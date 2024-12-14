@@ -89,5 +89,259 @@
             "name": "最高温度"
         }
 
+    },
+    "msg_items": {
+        "bark": {
+            "name":"bark",
+            "methods":["post","get"],
+            "help":{
+                "title":"使用教程",
+                "content":"官方文档：<a href='https://bark.day.app/#/tutorial' target='_blank'>https://bark.day.app/#/tutorial</a>"
+            },
+            "get":{
+                "url":"/:key/:body 或 /:key/:title/:body 或 /:key/:category/:title/:body",
+                "types":"",
+                "headers":"",
+                "body":""
+            },
+            "post":{
+                "url":"/push",
+                "types":"form",
+                "headers":"",
+                "body":{
+                    "title": "#SERVER.NAME#",
+                    "device_key": "xxxxxxxxx",
+                    "body": "#NEZHA#",
+                    "icon": "https://xxxxxxxx/nz.png"
+                    }
+            }
+        },
+        "slack": {
+            "name":"slack",
+            "methods":["post"],
+            "help":{
+                "title":"获取URL参数",
+                "content":"<b>1.创建 Slack App：</b>在 <a href='https://api.slack.com/apps' target='_blank'>Slack API</a> 创建一个新的 App。<br><b>2.添加 Incoming Webhook：</b>在 App 的功能页添加 Incoming Webhooks，并激活。<br><b>3.生成 Webhook URL：</b>点击 “Add New Webhook to Workspace”，选择一个 Channel，授权后获得 Webhook URL。"
+            },
+            "post":{
+                "url":"https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX",
+                "types":"JSON",
+                "headers":"",
+                "body":{
+                    "text": "#NEZHA#"
+                  }
+            }
+        },
+        "server": {
+            "name":"server",
+            "methods":["post","get"],
+            "help":{
+                "title":"使用教程",
+                "content":"官方文档：<a href='https://sct.ftqq.com' target='_blank'>https://sct.ftqq.com/</a>"
+            },
+            "get":{
+                "url":"https://sc.ftqq.com/SCUrandomkeys.send?title=哪吒通知信息&desp=#NEZHA#",
+                "types":"",
+                "headers":"",
+                "body":""
+            },
+            "post":{
+                "url":"https://sc.ftqq.com/SCUrandomkeys.send",
+                "types":"form",
+                "headers":"",
+                "body":{
+                    "title": "#SERVER.NAME#",
+                    "desp": "**#NEZHA#\n\n平均负载: \"#SERVER.LOAD1#\",\"#SERVER.LOAD5#\",\"#SERVER.LOAD15#\"\n\n## [点击访问面板](https://你的面板域名)\n\n![logo](https://raw.githubusercontent.com/naiba/nezha/master/resource/static/brand.svg)"
+                  }
+            }
+        },
+        "telegram": {
+            "name":"telegram",
+            "methods":["get"],
+            "help":{
+                "title":"获取URL参数",
+                "content":"<b>1.获取机器人 Token：</b>与 <a href='https://t.me/BotFather'  target='_blank'>@BotFather</a> 对话，发送 /newbot 创建新机器人，获取 Token。<br><b>2.获取用户 ID：</b>与 <a href='https://t.me/userinfobot'  target='_blank'>@userinfobot</a> 对话，获取你的用户 ID。<br><b>3.与机器人对话：</b>先与新创建的机器人发送一条消息，确保机器人可以发送消息给你。"
+            },
+            "get":{
+                "url":"https://api.telegram.org/bot<你的机器人Token>/sendMessage?chat_id=<你的用户ID>&text=#NEZHA#",
+                "types":"",
+                "headers":"",
+                "body":""
+            }
+        },
+        "wxpusher": {
+            "name":"wxpusher",
+            "methods":["post"],
+            "help":{
+                "title":"使用教程",
+                "content":"官方文档：<a href='https://wxpusher.zjiecode.com/docs/#/' target='_blank'>https://wxpusher.zjiecode.com/docs/#/</a><br>需提前关注你的应用"
+            },
+            "post":{
+                "url":"http://wxpusher.zjiecode.com/api/send/message",
+                "types":"JSON",
+                "headers":"",
+                "body":{
+                    "appToken": "你的appToken",
+                    "topicIds": [],
+                    "content": "#NEZHA#",
+                    "contentType": "1",
+                    "uids": ["你的uid"]
+                  }
+            }
+        },
+        "matrix": {
+            "name":"matrix",
+            "methods":["post"],
+            "help":{
+                "title":"参数说明",
+                "content":"变量替换：将以下变量替换为实际值<br><code>$YOUR_HOME_SERVER</code>：Matrix 服务器地址<br><code>$YOUR_NEZHA_URL</code>：你的哪吒面板 URL<br><code>$YOUR_MATRIX_USERNAME</code>：Matrix 用户名<br><code>$YOUR_MATRIX_PASSWD</code>：Matrix 用户密码<br><code>$YOUR_MATRIX_TOKEN</code>：Matrix 访问令牌<br><code>$ROOM_ID</code>：Matrix 房间 ID<br><b>获取访问令牌</b><br>使用以下命令获取 <code>YOUR_MATRIX_TOKEN</code>：<br><pre><code>curl -XPOST -d '{\"type\": \"m.login.password\", \"identifier\": {\"user\": \"$YOUR_MATRIX_USERNAME\", \"type\": \"m.id.user\"}, \"password\": \"$YOUR_MATRIX_PASSWD\"}' \"https://$YOUR_HOME_SERVER/_matrix/client/r0/login\"</code></pre>"
+            },
+            "post":{
+                "url":"https://$YOUR_HOME_SERVER/_matrix/client/r0/rooms/$ROOM_ID/send/m.room.message",
+                "types":"JSON",
+                "headers":{
+                    "Authorization": "Bearer $YOUR_MATRIX_TOKEN"
+                  },
+                "body":{
+                    "msgtype": "m.text",
+                    "format": "org.matrix.custom.html",
+                    "formatted_body": "<h1><a href=\"$YOUR_NEZHA_URL\" target=\"_blank\">Nezha Dashboard</a></h1><ul><li>时间：#DATETIME#</li><li>消息：#NEZHA#</li></ul>",
+                    "body": "#NEZHA#"
+                  }
+            }
+        },
+        "email": {
+            "name":"email",
+            "methods":["post"],
+            "help":{
+                "title":"获取 URL 参数",
+                "content":"<b>1.注册账号：</b>在 <a href='https://www.sendcloud.net/' target='_blank'>SendCloud</a> 注册并登录。<br><b>2.获取 APIUSER 和 APIKEY：</b>在账号设置中获取。<br><b>3.设置发件和收件邮箱：</b>自定义发件邮箱和收件邮箱。"
+            },
+            "post":{
+                "url":"https://api.sendcloud.net/apiv2/mail/send?apiUser=<APIUSER>&apiKey=<APIKEY>&from=<发件邮箱>&fromName=Nezha&to=<收件邮箱>&subject=Nezha-Notification&html=#NEZHA#",
+                "types":"JSON",
+                "headers":"",
+                "body":""
+            }
+        },
+        "dingbot": {
+            "name":"dingbot",
+            "methods":["post"],
+            "help":{
+                "title":"获取 URL 参数",
+                "content":"<b>1.创建机器人：</b>在钉钉群的设置中添加机器人，选择自定义关键词方式。<br><b>2.获取 Webhook URL：</b>创建完成后获得。"
+            },
+            "post":{
+                "url":"https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxx",
+                "types":"JSON",
+                "headers":{
+                    "Content-Type": "application/json"
+                  },
+                  "body":{
+                    "msgtype": "text",
+                    "text": {
+                      "content": "哪吒探针：\n#NEZHA#"
+                    }
+                  }
+                }
+        },
+        "wxbot": {
+            "name":"wxbot",
+            "methods":["post"],
+            "help":{
+                "title":"官方文档帮助",
+                "content":"<a href='https://developer.work.weixin.qq.com/document/path/91770' target='_blank'>https://developer.work.weixin.qq.com/document/path/91770</a>"
+            },
+            "post":{
+                "url":"https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=YOUR_BOT_KEY",
+                "types":"JSON",
+                "headers":"",
+                  "body":{
+                    "msgtype": "markdown",
+                    "markdown": {
+                      "content": "# 哪吒通知消息\n\n#NEZHA#\n\n> **名称**: #SERVER.NAME#\n> **IP**: #SERVER.IP#\n> **CPU**: #SERVER.CPU#%\n> **内存**: #SERVER.MEM#%\n> **磁盘**: #SERVER.DISK#%\n"
+                    }
+                  }
+            }
+        },
+        "wxapp": {
+            "name":"wxapp",
+            "methods":["post"],
+            "help":{
+                "title":"使用教程",
+                "content":"官方文档：<a href='https://developer.work.weixin.qq.com/document/path/91039' target='_blank'>https://developer.work.weixin.qq.com/document/path/91039</a><br><b>1.获取机器人TOKEN：</b>请求地址： <a href='https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=ID&corpsecret=SECRET' target='_blank'>https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=ID&corpsecret=SECRET</a>，其中ID替换为企业ID，SECRET替换为应用的凭证密钥secret。<br><b>2.填写其他参数：</b>通知范围可为<code>@all</code>或指定的用户名ID，agentid为应用的Id，media_id为图片素材id，content为消息内容（支持html语法）。"
+            },
+            "post":{
+                "url":"https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=<应用token>",
+                "types":"JSON",
+                "headers":"",
+                "body":{
+                "touser" : "<通知范围，@all或者用户id>",
+                    "msgtype" : "mpnews",
+                    "agentid" : "<应用id>",
+                    "mpnews" : {
+                        "articles":[
+                            {
+                                "title": "#NEZHA#", 
+                                "thumb_media_id": "<图片素材id>",
+                                "author": "作者",
+                                "content": "<b>服务器名称:</b> #SERVER.NAME#,<br>                                   <b>服务器IP:</b> #SERVER.IP#",
+                                "digest": "#NEZHA#"
+                            }
+                        ]
+                    }
+                }
+                
+            }
+        },
+        "feibot": {
+            "name":"feibot",
+            "methods":["post"],
+            "help":{
+                "title":"获取 URL 参数",
+                "content":"<b>1.创建机器人：</b>在飞书群设置中添加自定义机器人（Webhook）。<br><b>2.获取 Webhook URL：</b>创建完成后获得。"
+            },
+            "post":{
+                "url":"https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxxxxxxxxxxx", 
+                "types":"JSON",
+                "headers":"",
+                "body":{
+                    "msg_type": "text",
+                    "content": {
+                      "text": "#NEZHA#\n#DATETIME#"
+                    }
+                  }
+            }
+        }
+    },
+    "placeholder":{
+        "1":{"ph":"#NEZHA#","content":"通知内容"},
+        "2":{"ph":"#SERVER.NAME#","content":"服务器名称"},
+        "3":{"ph":"#SERVER.IP#","content":"服务器 IP"},
+        "4":{"ph":"#SERVER.IPV4#","content":"服务器 IPv4 地址"},
+        "5":{"ph":"#SERVER.IPV6#","content":"服务器 IPv6 地址"},
+        "6":{"ph":"#SERVER.CPU#","content":"CPU 使用率"},
+        "7":{"ph":"#SERVER.MEM#","content":"内存使用率"},
+        "8":{"ph":"#SERVER.SWAP#","content":"交换分区使用率"},
+        "9":{"ph":"#SERVER.DISK#","content":"磁盘使用率"},
+        "10":{"ph":"#SERVER.NETINSPEED#","content":"实时上传速度"},
+        "11":{"ph":"#SERVER.NETOUTSPEED#","content":"实时下载速度"},
+        "12":{"ph":"#SERVER.TRANSFERIN#","content":"总上传流量"},
+        "13":{"ph":"#SERVER.TRANSFEROUT#","content":"总下载流量"},
+        "14":{"ph":"#SERVER.LOAD1#","content":"1分钟内负载"},
+        "15":{"ph":"#SERVER.LOAD5#","content":"5分钟内负载"},
+        "16":{"ph":"#SERVER.LOAD15#","content":"15分钟内负载"},
+        "17":{"ph":"#DATETIME#","content":"当前时间"},
+        "18":{"ph":"#SERVER.ID#","content":"服务器ID"},
+        "19":{"ph":"#SERVER.MEMUSED#","content":"已使用的内存"},
+        "20":{"ph":"#SERVER.SWAPUSE#","content":"已使用的交换分区"},
+        "21":{"ph":"#SERVER.DISKUSED#","content":"已使用的硬盘空间"},
+        "22":{"ph":"#SERVER.MEMTOTAL#","content":"内存总数"},
+        "23":{"ph":"#SERVER.SWAPTOTAL#","content":"交换分区总数"},
+        "24":{"ph":"#SERVER.DISKTOTAL#","content":"硬盘空间总数"},
+        "25":{"ph":"#SERVER.NETINTRANSFER#","content":"入站流量"},
+        "26":{"ph":"#SERVER.NETOUTTRANSFER#","content":"出站流量"},
+        "27":{"ph":"#SERVER.TCPCONNCOUNT#","content":"TCP连接数"},
+        "28":{"ph":"#SERVER.UDPCONNCOUNT#","content":"UDP连接数"}
     }
 }

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>哪吒探针警报规则生成器</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/default.min.css">
+  <link rel="stylesheet" href="other/style.css">
+  <link rel="icon" href="./favicon.png">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/languages/json.min.js"></script>
+</head>
+
+<body>
+  <div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="text-center">哪吒探针通知格式查看</h1>
+      <div class="text-right">
+        <a href="index.html" class="btn btn-outline-dark">
+          <i class="fa-solid fa-blog"></i> 警报规则
+        </a>
+        <a href="https://github.com/AndyNull/nzrule" target="_blank"
+          class="btn btn-outline-primary ml-2">
+          <i class="fab fa-github"></i> Github
+        </a>
+      </div>
+    </div><hr>
+    <div class="form-group" >
+        <button type="button" class="btn btn-outline-secondary" id="email">邮件</button>
+        <button type="button" class="btn btn-outline-secondary" id="dingbot">钉钉群机器人</button>
+        <button type="button" class="btn btn-outline-secondary" id="wxbot">企业微信群机器人</button>
+        <button type="button" class="btn btn-outline-secondary" id="wxapp">企业微信应用</button>
+        <button type="button" class="btn btn-outline-secondary" id="feibot">飞书群机器人</button>
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-outline-primary" id="bark">Bark</button>
+        <button type="button" class="btn btn-outline-primary" id="slack">Slack</button>
+        <button type="button" class="btn btn-outline-primary" id="server">Server</button>
+        <button type="button" class="btn btn-outline-primary" id="telegram">Telegram</button>
+        <button type="button" class="btn btn-outline-primary" id="wxpusher">WXpusher</button>
+        <button type="button" class="btn btn-outline-primary" id="matrix">Matrix</button>
+        <a type="button" class="btn btn-danger text-right" data-toggle="modal" data-target="#placeholderdiv">占位符说明</a>
+    </div>
+
+    <div class="alert alert-info" style="display: none;" id="alert_info">
+        <h4 class="alert-heading" id="help_title"></h4>
+        <p id="help_content"></p>
+
+    </div>
+    <!--展示项目-->
+    <div class="modal fade" id="placeholderdiv" tabindex="-1"  style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">哪吒探针占位符</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-hover table-sm" id="data-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">占位符</th>
+                            <th scope="col">说明</th>
+                        </tr>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal">已知悉</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="methods">请求方式:</label>
+            <select class="form-control" id="methods">
+            
+            </select>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="type">请求类型:</label>
+            <input type="text" class="form-control" id="types">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="requrl">请求链接:</label>
+        <input type="text" class="form-control" id="requrl">
+    </div>
+    <div class="form-group">
+        <label for="headers">请求头:</label>
+        <input type="text" class="form-control" id="headers">
+    </div>
+    <div class="form-group">
+        <label for="body">Body:</label>
+        <textarea class="form-control" rows="6" id="body" ></textarea>
+    </div>
+</body>
+<script>
+    $(function() {
+        $.getJSON('other/data.json', function(data) {
+            data = data.placeholder; // 获取 placeholder 对象
+            // 动态生成表头
+            var thead = $('#data-table thead tr');
+            var tbody = $('#data-table tbody');
+            $.each(data, function(key, type) {
+                var row = $('<tr>');
+                row.append('<th scope="row">'+key+'</th><td>' + type.ph + '</td><td>' + type.content + '</td>');
+                tbody.append(row);
+            });
+        });
+    });
+    var currentData = null; // 用于存储从 JSON 文件加载的数据
+    var currentId = null;   // 用于存储当前选中的按钮的 ID
+    $('button').click(function () {
+        var id = $(this).attr('id');
+        currentId = id; // 更新当前选中的按钮 ID
+        $.getJSON('other/data.json', function(data) {
+            data = data.msg_items; // 获取 msg_items 对象
+            currentData = data; // 更新当前数据
+            $('input,textarea').val(""); // 清空 
+            $('#methods').empty(); // 清空  
+            $.each(data[id].methods, function(key, type) {
+                $('#methods').append('<option value="' + type + '">' + type + '</option>');
+            });
+            var type_selected = $('#methods option:first').val();
+            changeData(id,type_selected,data);
+        });
+    });
+    
+    $('#methods').change(function() {
+        var selectedValue = this.options[this.selectedIndex].value;
+        changeData(currentId,selectedValue,currentData);
+    });
+    function changeData(id,type,data) {
+        $('#types').val(data[id][type].types);
+        $('#requrl').val(data[id][type].url);
+        $('#headers').val(JSON.stringify(data[id][type].headers,null,2));
+        $('#body').val(JSON.stringify(data[id][type].body,null,2));
+        try {
+            $('#alert_info').show();
+            $('#help_title').text(data[id].help.title);
+            $('#help_content').html(data[id].help.content);
+        }catch (e) {
+            $('#help_title').text("暂无帮助");
+            $('#help_content').html("... ...");
+        }
+    }
+</script>
+</html>

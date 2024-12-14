@@ -19,3 +19,10 @@ body {
   .rule-output {
     min-height: 200px;
   }
+  .d-flex > .btn {
+    margin-right: .3rem; /* 或者你想要的任何间距 */
+  }
+
+  .d-flex > .btn:last-child {
+    margin-right: 0; /* 移除最后一个按钮的右边距 */
+  }
